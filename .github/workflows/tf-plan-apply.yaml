@@ -84,6 +84,9 @@ jobs:
       run:
         working-directory: ./Infra/AppService
     needs: [terraform-plan-dev]
+    env:
+      TF_KEY: 'dev.tfstate'
+      TF_VAR_environment: 'dev'
     
     steps:
     # Checkout the repository to the GitHub Actions runner
