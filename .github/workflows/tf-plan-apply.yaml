@@ -27,6 +27,7 @@ jobs:
         working-directory: ./Infra/AppService
     env:
       TF_KEY: 'dev.tfstate'
+      TF_VAR_envrionment: 'dev'
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
