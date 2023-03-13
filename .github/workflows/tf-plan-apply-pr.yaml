@@ -1,7 +1,7 @@
 name: "Terraform Plan/Apply"
 
 on:
-  push:
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -21,13 +21,13 @@ jobs:
   terraform-plan:
     name: "Terraform"
     runs-on: ubuntu-latest
-    environment: prod
+    environment: dev
     defaults:
       run:
         working-directory: ./Infra/AppService
     env:
-      TF_KEY: 'prod.tfstate'
-      TF_VAR_environment: 'prod'
+      TF_KEY: 'pr-${{ github.event.number }}.tfstate'
+      TF_VAR_environment: 'pr-${{ github.event.number }}'
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
@@ -61,8 +61,8 @@ jobs:
         working-directory: ./Infra/AppService
     needs: [terraform-plan]
     env:
-      TF_KEY: 'prod.tfstate'
-      TF_VAR_environment: 'prod'
+      TF_KEY: 'pr-${{ github.event.number }}.tfstate'
+      TF_VAR_environment: 'pr-${{ github.event.number }}'
     
     steps:
     # Checkout the repository to the GitHub Actions runner
