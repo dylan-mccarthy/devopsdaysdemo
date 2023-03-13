@@ -80,6 +80,9 @@ jobs:
     name: 'Terraform Apply - Dev'
     runs-on: ubuntu-latest
     environment: dev
+    defaults:
+      run:
+        working-directory: ./Infra/AppService
     needs: [terraform-plan-dev]
     
     steps:
