@@ -22,7 +22,9 @@ jobs:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
     environment: dev
-    working-directory: ./Infra/AppService
+    defaults:
+      run:
+        working-directory: ./Infra/AppService
     env:
       TF_KEY: 'dev.tfstate'
     steps:
