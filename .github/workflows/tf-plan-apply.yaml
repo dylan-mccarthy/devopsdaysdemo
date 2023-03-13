@@ -117,3 +117,26 @@ jobs:
         run: |
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.sha }}
+    
+  application_deploy:
+    name: "Application Deploy to App Service"
+    runs-on: ubuntu-latest
+    needs: [application_build]
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: 'Deploy to App Service'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'appservice-dod-demo-prod'
+          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.sha }}
