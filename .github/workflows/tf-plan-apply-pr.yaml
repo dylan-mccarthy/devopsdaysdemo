@@ -53,9 +53,9 @@ jobs:
           path: ./Infra/AppService/tfplan
 
   terraform-apply:
-    name: 'Terraform Applyv'
+    name: 'Terraform Apply'
     runs-on: ubuntu-latest
-    environment: prod
+    environment: dev
     defaults:
       run:
         working-directory: ./Infra/AppService
@@ -138,7 +138,7 @@ jobs:
       - name: Set Web App ACR authentication
         uses: Azure/appservice-settings@v1
         with:
-        app-name: 'node-rnc'
+        app-name: 'appserviceplan-dod-demo-${{ env.TF_VAR_environment }}'
         app-settings-json: |
           [
               {
@@ -168,5 +168,5 @@ jobs:
       - name: 'Deploy to App Service'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'appservice-dod-demo-prod'
+          app-name: 'appserviceplan-dod-demo-${{ env.TF_VAR_environment }}'
           images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:pr-${{ github.event.number }}

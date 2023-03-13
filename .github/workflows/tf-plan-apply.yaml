@@ -145,7 +145,7 @@ jobs:
       - name: Set Web App ACR authentication
         uses: Azure/appservice-settings@v1
         with:
-        app-name: 'node-rnc'
+        app-name: 'appservice-dod-demo-prod'
         app-settings-json: |
           [
               {
