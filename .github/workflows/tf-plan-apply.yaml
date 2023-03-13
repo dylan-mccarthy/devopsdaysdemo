@@ -115,8 +115,8 @@ jobs:
       - name: 'Build and Push image'
         working-directory: ./Application
         run: |
-          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.sha }} .
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.sha }}
+          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.run_number }} .
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.run_number }}
     
   application_deploy:
     name: "Application Deploy to App Service"
@@ -135,8 +135,15 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: 'Registry Login'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          
       - name: 'Deploy to App Service'
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'appservice-dod-demo-prod'
-          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.sha }}
+          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:${{ github.run_number }}
