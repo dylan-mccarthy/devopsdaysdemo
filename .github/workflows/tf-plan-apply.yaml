@@ -1,0 +1,67 @@
+name: "Terraform Plan/Apply"
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_USE_OIDC: true
+
+jobs:
+  terraform-plan-dev:
+    name: "Terraform Plan"
+    runs-on: ubuntu-latest
+    environment: dev
+    env:
+      TF_KEY: 'dev.tfstate'
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: "Terraform Setup"
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.7
+          cli_config_credentials_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Terraform Init"
+        id: init
+        run: terraform init --backend-config="key=$TF_KEY"
+
+      - name: "Terraform Plan"
+        run: terraform plan -out=tfplan
+
+      - name: "Terraform Plan Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: tfplan
+
+      # Create string output of Terraform Plan
+      - name: Create String Output
+        id: tf-plan-string
+        run: |
+          TERRAFORM_PLAN=$(terraform show -no-color tfplan)
+          
+          delimiter="$(openssl rand -hex 8)"
+          echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+          echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
+          echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo '```terraform' >> $GITHUB_OUTPUT
+          echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
+          echo '```' >> $GITHUB_OUTPUT
+          echo "</details>" >> $GITHUB_OUTPUT
+          echo "${delimiter}" >> $GITHUB_OUTPUT
