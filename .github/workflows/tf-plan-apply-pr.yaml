@@ -135,6 +135,29 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Set Web App ACR authentication
+        uses: Azure/appservice-settings@v1
+        with:
+        app-name: 'node-rnc'
+        app-settings-json: |
+          [
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                  "value": "${{ secrets.REGISTRY_PASSWORD }}",
+                  "slotSetting": false
+              },
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_URL",
+                  "value": "${{ secrets.REGISTRY_LOGIN_SERVER }}",
+                  "slotSetting": false
+              },
+              {
+                  "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                  "value": "${{ secrets.REGISTRY_USERNAME  }}",
+                  "slotSetting": false
+              }
+          ]
+
       - name: 'Registry Login'
         uses: azure/docker-login@v1
         with:
