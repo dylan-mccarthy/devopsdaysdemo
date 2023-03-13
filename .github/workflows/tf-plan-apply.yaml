@@ -76,11 +76,11 @@ jobs:
           echo "</details>" >> $GITHUB_OUTPUT
           echo "${delimiter}" >> $GITHUB_OUTPUT
 
-  terraform-apply:
+  terraform-apply-dev:
     name: 'Terraform Apply - Dev'
     runs-on: ubuntu-latest
     environment: dev
-    needs: [terraform-plan]
+    needs: [terraform-plan-dev]
     
     steps:
     # Checkout the repository to the GitHub Actions runner
