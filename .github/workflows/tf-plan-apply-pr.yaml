@@ -174,3 +174,10 @@ jobs:
         with:
           app-name: 'appservice-dod-demo-${{ env.TF_VAR_environment }}'
           images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/devopsdaysdemo:pr-${{ github.event.number }}
+
+      - name: 'Post URL to PR'
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            Application deployed to https://appservice-dod-demo-${{ env.TF_VAR_environment }}.azurewebsites.net
