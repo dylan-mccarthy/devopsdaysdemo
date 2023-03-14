@@ -4,7 +4,7 @@ public class WeatherForecastService
 {
     private static readonly string[] Summaries = new[]
     {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching", "Walking on the Sun"
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
     public Task<WeatherForecast[]> GetForecastAsync(DateOnly startDate)
